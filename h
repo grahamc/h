@@ -26,9 +26,16 @@ url  = nil
 case term
 when "--setup"
   code_root = Pathname.new(ARGV[0] || DEFAULT_CODE_ROOT).expand_path
+
+  if (ARGV[1] || '') == '--jj'
+    jj_arg = '--jj'
+  else
+    jj_arg = '--no-jj'
+  end
+
   puts <<-SH
 h() {
-  _h_dir=$(command h --resolve "#{code_root}" "$@")
+  _h_dir=$(command h --resolve "#{code_root}" "#{jj_arg}" "$@")
   _h_ret=$?
   [ "$_h_dir" != "$PWD" ] && cd "$_h_dir"
   return $_h_ret
@@ -44,6 +51,16 @@ else
   puts
 
   abort "Usage: eval \"$(h --setup [code-root])\""
+end
+
+if ARGV[0] == '--jj'
+  USE_JJ = true
+  ARGV.shift
+elsif ARGV[0] == '--no-jj'
+  USE_JJ = false
+  ARGV.shift
+else
+  USE_JJ = false
 end
 
 term = ARGV.shift
@@ -131,16 +148,18 @@ unless path.directory?
   end
 end
 
-jjdir = path + ".jj"
-unless jjdir.directory?
-  system(
-      'jj',
-      'git',
-      'init',
-      '--colocate',
-      out: :err,
-      close_others: true,
-  )
+if USE_JJ
+  jjdir = path + ".jj"
+  unless jjdir.directory?
+    system(
+        'jj',
+        'git',
+        'init',
+        '--colocate',
+        out: :err,
+        close_others: true,
+    )
+  end
 end
 
 puts path
