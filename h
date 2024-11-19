@@ -131,4 +131,16 @@ unless path.directory?
   end
 end
 
+jjdir = path + ".jj"
+unless jjdir.directory?
+  system(
+      'jj',
+      'git',
+      'init',
+      '--colocate',
+      out: :err,
+      close_others: true,
+  )
+end
+
 puts path
