@@ -150,15 +150,18 @@ end
 
 if USE_JJ
   jjdir = path + ".jj"
+
   unless jjdir.directory?
-    system(
+    Dir.chdir(path) {
+      system(
         'jj',
         'git',
         'init',
         '--colocate',
         out: :err,
         close_others: true,
-    )
+      )
+    }
   end
 end
 
