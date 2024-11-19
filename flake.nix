@@ -24,19 +24,29 @@
         in
         {
           options = {
-            programs.h.codeRoot = lib.mkOption {
-              type = lib.types.str;
-              default = "~/src";
-              description = lib.mdDoc ''
-                Root location for checking out your code.
-              '';
+            programs.h = {
+              codeRoot = lib.mkOption {
+                type = lib.types.str;
+                default = "~/src";
+                description = lib.mdDoc ''
+                  Root location for checking out your code.
+                '';
+              };
+
+              jj = lib.mkOption {
+                type = lib.types.bool;
+                default = false;
+                description = lib.mdDoc ''
+                  Automatically setup jj colocation with Git repositories.
+                '';
+              };
             };
           };
           config = {
             environment.systemPackages = [ h ];
 
             environment.extraInit = ''
-              eval "$(${h}/bin/h --setup ${lib.escapeShellArg config.programs.h.codeRoot})"
+              eval "$(${h}/bin/h --setup ${lib.escapeShellArg config.programs.h.codeRoot} ${if lib.escapeShellArg config.programs.h.jj then "--jj" else "--no-jj"})"
             '';
           };
         };
