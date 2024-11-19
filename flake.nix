@@ -46,7 +46,7 @@
             environment.systemPackages = [ h ];
 
             environment.extraInit = ''
-              eval "$(${h}/bin/h --setup ${lib.escapeShellArg config.programs.h.codeRoot} ${if lib.escapeShellArg config.programs.h.jj then "--jj" else "--no-jj"})"
+              eval "$(${h}/bin/h --setup ${lib.escapeShellArg config.programs.h.codeRoot} ${if config.programs.h.jj then "--jj" else "--no-jj"})"
             '';
           };
         };
@@ -77,7 +77,7 @@
           };
           config = let
             hook = ''
-              eval "$(${h}/bin/h --setup ${lib.escapeShellArg config.programs.h.codeRoot} ${if lib.escapeShellArg config.programs.h.jj then "--jj" else "--no-jj"})"
+              eval "$(${h}/bin/h --setup ${lib.escapeShellArg config.programs.h.codeRoot} ${if config.programs.h.jj then "--jj" else "--no-jj"})"
             '';
           in {
             home.packages = [ h ];
